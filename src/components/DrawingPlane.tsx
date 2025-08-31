@@ -1,27 +1,32 @@
-import React, { useRef } from 'react';
+import React, { useRef, forwardRef, useImperativeHandle } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Plane } from '@react-three/drei';
 import * as THREE from 'three';
 import { useDrawStore } from '../store/drawStore';
 import { useDrawing } from '../hooks/useDrawing';
 import ParticleSystem from './particles/ParticleSystem';
-import LineRenderer from './lines/LineRenderer';
+import LineRenderer, { LineRendererHandle } from './lines/LineRenderer';
 import DrawingCursor from './cursor/DrawingCursor';
 
-const DrawingPlane: React.FC = () => {
+export interface DrawingPlaneHandle {
+  getMeshes: () => THREE.Mesh[];
+}
+
+const DrawingPlane = forwardRef<DrawingPlaneHandle>((props, ref) => {
   const planeRef = useRef<THREE.Mesh>(null);
+  const lineRendererRef = useRef<LineRendererHandle>(null);
   const { camera, raycaster, mouse } = useThree();
-  const { 
-    lines, 
-    addPointToCurrentLine, 
-    startNewLine, 
-    endCurrentLine, 
-    currentColor, 
-    showLines, 
+  const {
+    lines,
+    addPointToCurrentLine,
+    startNewLine,
+    endCurrentLine,
+    currentColor,
+    showLines,
     isErasing,
-    cameraEnabled 
+    cameraEnabled
   } = useDrawStore();
-  
+
   const { isDrawing, handlePointerDown, handlePointerMove, handlePointerUp } = useDrawing({
     enabled: !cameraEnabled,
     planeRef,
@@ -30,21 +35,23 @@ const DrawingPlane: React.FC = () => {
     endCurrentLine,
   });
 
-  // Cursor position for visual feedback
   const cursorRef = useRef<THREE.Mesh>(null);
   const cursorPosition = useRef(new THREE.Vector3(0, 0.01, 0));
+
+  useImperativeHandle(ref, () => ({
+    getMeshes: () => lineRendererRef.current?.getMeshes() || []
+  }));
 
   useFrame(() => {
     if (!planeRef.current) return;
 
-    // Update cursor position
     raycaster.setFromCamera(mouse, camera);
     const intersects = raycaster.intersectObject(planeRef.current);
-    
+
     if (intersects.length > 0) {
       cursorPosition.current.copy(intersects[0].point);
-      cursorPosition.current.y = 0.01; // Slightly above the plane
-      
+      cursorPosition.current.y = 0.01;
+
       if (cursorRef.current) {
         cursorRef.current.position.copy(cursorPosition.current);
       }
@@ -67,7 +74,7 @@ const DrawingPlane: React.FC = () => {
           color="#111111"
           roughness={1}
           metalness={0}
-          flatShading={true}
+          flatShading
           side={THREE.DoubleSide}
         />
       </Plane>
@@ -79,8 +86,8 @@ const DrawingPlane: React.FC = () => {
         isErasing={isErasing}
       />
 
-      <LineRenderer lines={lines} visible={showLines} />
-      
+      <LineRenderer ref={lineRendererRef} lines={lines} visible={showLines} />
+
       <ParticleSystem
         isDrawing={isDrawing}
         currentColor={currentColor}
@@ -89,6 +96,7 @@ const DrawingPlane: React.FC = () => {
       />
     </group>
   );
-};
+});
 
 export default DrawingPlane;
+
