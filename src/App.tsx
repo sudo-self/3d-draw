@@ -8,11 +8,11 @@ import {
   Rotate3dIcon,
   DownloadIcon
 } from 'lucide-react';
-import DrawingCanvas from './components/DrawingCanvas';
+import DrawingCanvas, { DrawingCanvasHandle } from './components/DrawingCanvas';
 import ColorPicker from './components/ColorPicker';
 import { useDrawStore } from './store/drawStore';
 import { GLTFExporter } from 'three/examples/jsm/exporters/GLTFExporter';
-import { DrawingPlaneHandle } from './components/DrawingPlane';
+import * as THREE from 'three';
 
 function setViewportHeight() {
   const vh = window.innerHeight * 0.01;
@@ -34,13 +34,14 @@ function App() {
     toggleCamera
   } = useDrawStore();
 
-  const canvasRef = useRef<DrawingPlaneHandle>(null);
+  // Correctly typed ref to DrawingCanvas
+  const canvasRef = useRef<DrawingCanvasHandle>(null);
 
   const handleExportGLB = () => {
     if (!canvasRef.current) return;
 
     const meshes = canvasRef.current.getMeshes();
-    if (meshes.length === 0) {
+    if (!meshes.length) {
       alert('Nothing to export!');
       return;
     }
@@ -96,11 +97,7 @@ function App() {
 
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 p-2 bg-black/50 backdrop-blur-md rounded-full">
         {/* Color Picker */}
-        <button
-          onClick={toggleColorPicker}
-          className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:bg-gray-800"
-          aria-label="Color picker"
-        >
+        <button onClick={toggleColorPicker} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800" aria-label="Color picker">
           <div className="relative">
             <PaletteIcon size={24} />
             <div className="absolute -top-1 -right-1 w-3 h-3 rounded-full" style={{ backgroundColor: currentColor }} />
@@ -110,11 +107,7 @@ function App() {
         <div className="h-6 w-px bg-gray-700" />
 
         {/* Eraser */}
-        <button
-          onClick={toggleEraser}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all hover:bg-gray-800 relative ${isErasing ? 'bg-red-900/50 ring-2 ring-red-500 ring-opacity-50' : ''}`}
-          aria-label="Eraser"
-        >
+        <button onClick={toggleEraser} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 relative ${isErasing ? 'bg-red-900/50 ring-2 ring-red-500 ring-opacity-50' : ''}`} aria-label="Eraser">
           <EraserIcon size={20} />
           {isErasing && <div className="absolute inset-0 rounded-full animate-pulse bg-red-500/20" />}
         </button>
@@ -122,11 +115,7 @@ function App() {
         <div className="h-6 w-px bg-gray-700" />
 
         {/* Camera */}
-        <button
-          onClick={toggleCamera}
-          className={`w-10 h-10 rounded-full flex items-center justify-center transition-all hover:bg-gray-800 relative ${cameraEnabled ? 'bg-blue-900/50 ring-2 ring-blue-500 ring-opacity-50' : ''}`}
-          aria-label="Toggle camera controls"
-        >
+        <button onClick={toggleCamera} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 relative ${cameraEnabled ? 'bg-blue-900/50 ring-2 ring-blue-500 ring-opacity-50' : ''}`} aria-label="Toggle camera controls">
           <Rotate3dIcon size={20} />
           {cameraEnabled && <div className="absolute inset-0 rounded-full animate-pulse bg-blue-500/20" />}
         </button>
@@ -134,45 +123,33 @@ function App() {
         <div className="h-6 w-px bg-gray-700" />
 
         {/* Toggle lines */}
-        <button
-          onClick={toggleLineVisibility}
-          className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:bg-gray-800"
-          aria-label={showLines ? "Hide lines" : "Show lines"}
-        >
+        <button onClick={toggleLineVisibility} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800" aria-label={showLines ? "Hide lines" : "Show lines"}>
           {showLines ? <EyeIcon size={20} /> : <EyeOffIcon size={20} />}
         </button>
 
         <div className="h-6 w-px bg-gray-700" />
 
         {/* Clear canvas */}
-        <button
-          onClick={clearLines}
-          className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:bg-red-900"
-          aria-label="Clear canvas"
-        >
+        <button onClick={clearLines} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-900" aria-label="Clear canvas">
           <Trash2Icon size={20} />
         </button>
 
         <div className="h-6 w-px bg-gray-700" />
 
         {/* Download GLB */}
-        <button
-          onClick={handleExportGLB}
-          className="w-10 h-10 rounded-full flex items-center justify-center transition-all hover:bg-green-800"
-          aria-label="Download GLB"
-        >
+        <button onClick={handleExportGLB} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-green-800" aria-label="Download GLB">
           <DownloadIcon size={20} />
         </button>
       </div>
 
-      {showColorPicker && (
-        <ColorPicker currentColor={currentColor} onChange={setCurrentColor} onClose={toggleColorPicker} />
-      )}
+      {showColorPicker && <ColorPicker currentColor={currentColor} onChange={setCurrentColor} onClose={toggleColorPicker} />}
     </div>
   );
 }
 
 export default App;
+
+
 
 
 
