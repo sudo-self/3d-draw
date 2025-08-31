@@ -1,36 +1,14 @@
 # 3D Draw
+### <a href="https://3d-draw.vercel.app">Demo</a>
 
-3D draw with React and Three.js.
+3D drawing app built with **React**, **Three.js**, and **Vite**.  
+Draw in 3D space, export your creations, and experiment with interactive canvas tools.
+
+![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=fff)
+![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=000)
+![Three.js](https://img.shields.io/badge/Three.js-black?logo=three.js&logoColor=white)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
+
+---
 
 
-
-## Installation
-
-1. Clone the repository:
-
-   ```bash
-   git clone <repository-url>
-   ```
-2. Navigate to the project directory:
-
-   ```bash
-   cd vite-react-typescript-starter
-   ```
-3. Install dependencies:
-
-   ```bash
-   npm install
-   ```
-
-## Usage
-
-1. Run the development server:
-
-   ```bash
-   npm run dev
-   ```
-2. Open your browser and navigate to `http://localhost:5173`.
-
-## License
-
-This project is licensed under the MIT License
