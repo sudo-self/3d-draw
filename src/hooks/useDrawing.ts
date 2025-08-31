@@ -44,7 +44,7 @@ export function useDrawing({
     if (!point) return;
     
     isDrawing.current = true;
-    startNewLine(point, ''); // Color is managed in the store
+    startNewLine(point, '');
   }, [enabled, getIntersectionPoint, startNewLine]);
 
   const handlePointerMove = useCallback((event: THREE.Event) => {
