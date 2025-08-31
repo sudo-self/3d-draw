@@ -46,20 +46,10 @@ const handleExportGLB = () => {
   }
 
   const exportRoot = new THREE.Group();
-
   meshes.forEach((mesh) => {
     mesh.updateMatrixWorld(true);
-
-    const clone = mesh.clone(true); 
-    if (clone.geometry) {
-      clone.geometry.computeVertexNormals();
-    }
-
- 
-    clone.position.copy(mesh.getWorldPosition(new THREE.Vector3()));
-    clone.quaternion.copy(mesh.getWorldQuaternion(new THREE.Quaternion()));
-    clone.scale.copy(mesh.getWorldScale(new THREE.Vector3()));
-
+    const clone = mesh.clone(true);
+    if (clone.geometry) clone.geometry.computeVertexNormals();
     exportRoot.add(clone);
   });
 
@@ -67,19 +57,32 @@ const handleExportGLB = () => {
   exporter.parse(
     exportRoot,
     (result) => {
+      let blob;
+      let filename;
+
       if (result instanceof ArrayBuffer) {
-        const blob = new Blob([result], { type: 'model/gltf-binary' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'drawing.glb';
-        link.click();
+        blob = new Blob([result], { type: "model/gltf-binary" });
+        filename = "drawing.glb";
       } else {
-        console.error('Expected binary format but got JSON', result);
+        // JSON fallback
+        const json = JSON.stringify(result, null, 2);
+        blob = new Blob([json], { type: "model/gltf+json" });
+        filename = "drawing.gltf";
       }
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link); 
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
     },
     { binary: true }
   );
 };
+
 
 
   useEffect(() => {
