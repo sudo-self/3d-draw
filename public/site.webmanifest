@@ -2,7 +2,7 @@
   "name": "3D Draw",
   "short_name": "3D",
   "description": "3D draw with React and Three.js",
-  "start_url": "/",
+  "start_url": "https://3d-draw.vercel.app",
   "display": "standalone",
   "background_color": "#050505",
   "theme_color": "#050505",
