@@ -1,0 +1,16 @@
+{
+  "name": "3D Draw",
+  "short_name": "3D",
+  "description": "3D draw with React and Three.js",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#050505",
+  "theme_color": "#050505",
+  "icons": [
+    {
+      "src": "/vite.svg",
+      "sizes": "32x32",
+      "type": "image/svg+xml"
+    }
+  ]
+}
