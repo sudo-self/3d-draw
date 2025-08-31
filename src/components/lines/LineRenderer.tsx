@@ -14,27 +14,20 @@ export interface LineRendererHandle {
 const LineRenderer = forwardRef<LineRendererHandle, LineRendererProps>(({ lines, visible }, ref) => {
   const meshRefs = useRef<THREE.Mesh[]>([]);
 
-  // Expose meshes to parent via ref
+
   useImperativeHandle(ref, () => ({
     getMeshes: () => meshRefs.current.filter(Boolean),
   }));
 
   const thickLines = useMemo(() => {
-    // Clear previous refs
     meshRefs.current = [];
 
-    // Generate mesh elements
     return lines.flatMap((line, lineIndex) => {
       if (line.points.length < 2) return [];
 
       return line.points.slice(0, -1).map((point, i) => {
         const nextPoint = line.points[i + 1];
-
-        const direction = new THREE.Vector3(
-          nextPoint.x - point.x,
-          0,
-          nextPoint.z - point.z
-        );
+        const direction = new THREE.Vector3(nextPoint.x - point.x, 0, nextPoint.z - point.z);
         const length = direction.length();
         direction.normalize();
 
@@ -46,7 +39,7 @@ const LineRenderer = forwardRef<LineRendererHandle, LineRendererProps>(({ lines,
 
         const up = new THREE.Vector3(0, 1, 0);
         const axis = new THREE.Vector3().crossVectors(up, direction);
-        const angle = up.dot(direction) > 0.999 ? 0 : Math.acos(up.dot(direction));
+        const angle = Math.acos(up.dot(direction));
         const quaternion = new THREE.Quaternion().setFromAxisAngle(axis.normalize(), angle);
 
         return (
@@ -57,12 +50,7 @@ const LineRenderer = forwardRef<LineRendererHandle, LineRendererProps>(({ lines,
             ref={(m) => m && meshRefs.current.push(m)}
           >
             <cylinderGeometry args={[0.03, 0.03, length, 8]} />
-            <meshStandardMaterial
-              color={line.color}
-              emissive={line.color}
-              emissiveIntensity={2}
-              toneMapped={false}
-            />
+            <meshStandardMaterial color={line.color} emissive={line.color} emissiveIntensity={2} toneMapped={false} />
           </mesh>
         );
       });
@@ -73,5 +61,6 @@ const LineRenderer = forwardRef<LineRendererHandle, LineRendererProps>(({ lines,
 });
 
 export default LineRenderer;
+
 
 

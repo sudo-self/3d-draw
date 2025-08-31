@@ -34,38 +34,39 @@ function App() {
     toggleCamera
   } = useDrawStore();
 
-  // Correctly typed ref to DrawingCanvas
   const canvasRef = useRef<DrawingCanvasHandle>(null);
 
-  const handleExportGLB = () => {
-    if (!canvasRef.current) return;
+    const handleExportGLB = () => {
+      if (!canvasRef.current) return;
 
-    const meshes = canvasRef.current.getMeshes();
-    if (!meshes.length) {
-      alert('Nothing to export!');
-      return;
-    }
+      const meshes = canvasRef.current.getMeshes();
+      if (!meshes.length) {
+        alert('Nothing to export!');
+        return;
+      }
 
-    // Create a temporary scene and add all meshes
-    const exportScene = new THREE.Scene();
-    meshes.forEach((mesh) => exportScene.add(mesh.clone()));
+      const exportRoot = new THREE.Group();
+      meshes.forEach((mesh) => {
+        mesh.updateMatrixWorld(true); 
+        const clone = mesh.clone(true);
+        clone.applyMatrix4(mesh.matrixWorld);
+        exportRoot.add(clone);
+      });
 
-    const exporter = new GLTFExporter();
-    exporter.parse(
-      exportScene,
-      (result) => {
-        const blob = new Blob(
-          [result instanceof ArrayBuffer ? result : JSON.stringify(result)],
-          { type: 'model/gltf-binary' }
-        );
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'drawing.glb';
-        link.click();
-      },
-      { binary: true }
-    );
-  };
+      const exporter = new GLTFExporter();
+      exporter.parse(
+        exportRoot,
+        (result) => {
+          const blob = new Blob([result instanceof ArrayBuffer ? result : JSON.stringify(result)], { type: 'model/gltf-binary' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'drawing.glb';
+          link.click();
+        },
+        { binary: true }
+      );
+    };
+
 
   useEffect(() => {
     const preventDefault = (e: Event) => e.preventDefault();
@@ -73,9 +74,11 @@ function App() {
     document.addEventListener('gesturestart', preventDefault);
     document.addEventListener('gesturechange', preventDefault);
     document.addEventListener('gestureend', preventDefault);
+
     setViewportHeight();
     window.addEventListener('resize', setViewportHeight);
     window.addEventListener('orientationchange', setViewportHeight);
+
     return () => {
       document.removeEventListener('touchmove', preventDefault);
       document.removeEventListener('gesturestart', preventDefault);
@@ -148,6 +151,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
