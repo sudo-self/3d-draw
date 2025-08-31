@@ -1,5 +1,4 @@
 import React, { Suspense, useEffect, useRef } from 'react';
-import { Helmet } from 'react-helmet-async';
 import {
   PaletteIcon,
   EraserIcon,
@@ -37,36 +36,37 @@ function App() {
 
   const canvasRef = useRef<DrawingCanvasHandle>(null);
 
-  const handleExportGLB = () => {
-    if (!canvasRef.current) return;
+    const handleExportGLB = () => {
+      if (!canvasRef.current) return;
 
-    const meshes = canvasRef.current.getMeshes();
-    if (!meshes.length) {
-      alert('Nothing to export!');
-      return;
-    }
+      const meshes = canvasRef.current.getMeshes();
+      if (!meshes.length) {
+        alert('Nothing to export!');
+        return;
+      }
 
-    const exportRoot = new THREE.Group();
-    meshes.forEach((mesh) => {
-      mesh.updateWorldMatrix(true, true);
-      const clone = mesh.clone(true);
-      clone.applyMatrix4(mesh.matrixWorld);
-      exportRoot.add(clone);
-    });
+      const exportRoot = new THREE.Group();
+      meshes.forEach((mesh) => {
+        mesh.updateMatrixWorld(true); 
+        const clone = mesh.clone(true);
+        clone.applyMatrix4(mesh.matrixWorld);
+        exportRoot.add(clone);
+      });
 
-    const exporter = new GLTFExporter();
-    exporter.parse(
-      exportRoot,
-      (result) => {
-        const blob = new Blob([result instanceof ArrayBuffer ? result : JSON.stringify(result)], { type: 'model/gltf-binary' });
-        const link = document.createElement('a');
-        link.href = URL.createObjectURL(blob);
-        link.download = 'drawing.glb';
-        link.click();
-      },
-      { binary: true }
-    );
-  };
+      const exporter = new GLTFExporter();
+      exporter.parse(
+        exportRoot,
+        (result) => {
+          const blob = new Blob([result instanceof ArrayBuffer ? result : JSON.stringify(result)], { type: 'model/gltf-binary' });
+          const link = document.createElement('a');
+          link.href = URL.createObjectURL(blob);
+          link.download = 'drawing.glb';
+          link.click();
+        },
+        { binary: true }
+      );
+    };
+
 
   useEffect(() => {
     const preventDefault = (e: Event) => e.preventDefault();
@@ -94,27 +94,6 @@ function App() {
       className="relative w-screen bg-black text-white overflow-hidden"
       style={{ height: 'calc(var(--vh) * 100)' }}
     >
-      {/* SEO / Meta Tags */}
-      <Helmet>
-        <title>3D Draw – WebGL Drawing App</title>
-        <meta name="description" content="Draw in 3D directly in your browser with 3D-Draw. Export your creations as GLB models." />
-        <meta name="keywords" content="3D drawing, WebGL, GLB export, online 3D art, three.js" />
-        <meta name="author" content="sudo-self" />
-
-        {/* Open Graph / Social Sharing */}
-        <meta property="og:title" content="3D Draw – WebGL Drawing App" />
-        <meta property="og:description" content="Draw in 3D directly in your browser and export your models as GLB." />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://3d-draw.vercel.app/" />
-        <meta property="og:image" content="https://3d-draw.vercel.app/og-image.png" />
-
-        {/* Twitter Card */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="3D Draw – WebGL Drawing App" />
-        <meta name="twitter:description" content="Draw in 3D directly in your browser and export your models as GLB." />
-        <meta name="twitter:image" content="https://3d-draw.vercel.app/og-image.png" />
-      </Helmet>
-
       <Suspense fallback={<div className="h-screen w-screen flex items-center justify-center">Loading...</div>}>
         <DrawingCanvas ref={canvasRef} />
       </Suspense>
@@ -172,6 +151,12 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+
 
 
 
