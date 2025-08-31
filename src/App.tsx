@@ -33,8 +33,8 @@ function App() {
     cameraEnabled,
     toggleCamera
   } = useDrawStore();
-
-  const canvasRef = useRef<DrawingCanvasHandle>(null);
+  
+ const canvasRef = useRef<DrawingCanvasHandle>(null);
 
 const handleExportGLB = () => {
   if (!canvasRef.current) return;
@@ -50,10 +50,10 @@ const handleExportGLB = () => {
 
     const clone = mesh.clone();
     
-
-    if (!clone.geometry) return;
     
-
+    clone.geometry = mesh.geometry.clone();
+    
+    
     clone.geometry.applyMatrix4(mesh.matrixWorld);
     
 
@@ -70,21 +70,23 @@ const handleExportGLB = () => {
     exportRoot,
     (result) => {
       if (result instanceof ArrayBuffer) {
-
         const blob = new Blob([result], { type: 'model/gltf-binary' });
         const link = document.createElement('a');
         link.href = URL.createObjectURL(blob);
         link.download = 'drawing.glb';
+        document.body.appendChild(link);
         link.click();
-      } else {
+        document.body.removeChild(link);
+        
 
+        setTimeout(() => URL.revokeObjectURL(link.href), 100);
+      } else {
         console.error('Expected binary format but got JSON');
       }
     },
     { binary: true }
   );
 };
-
 
   useEffect(() => {
     const preventDefault = (e: Event) => e.preventDefault();
