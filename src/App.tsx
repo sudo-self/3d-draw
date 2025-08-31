@@ -36,36 +36,54 @@ function App() {
 
   const canvasRef = useRef<DrawingCanvasHandle>(null);
 
-    const handleExportGLB = () => {
-      if (!canvasRef.current) return;
+const handleExportGLB = () => {
+  if (!canvasRef.current) return;
 
-      const meshes = canvasRef.current.getMeshes();
-      if (!meshes.length) {
-        alert('Nothing to export!');
-        return;
+  const meshes = canvasRef.current.getMeshes();
+  if (!meshes.length) {
+    alert('Nothing to export!');
+    return;
+  }
+
+  const exportRoot = new THREE.Group();
+  meshes.forEach((mesh) => {
+
+    const clone = mesh.clone();
+    
+
+    if (!clone.geometry) return;
+    
+
+    clone.geometry.applyMatrix4(mesh.matrixWorld);
+    
+
+    clone.position.set(0, 0, 0);
+    clone.rotation.set(0, 0, 0);
+    clone.scale.set(1, 1, 1);
+    clone.updateMatrix();
+    
+    exportRoot.add(clone);
+  });
+
+  const exporter = new GLTFExporter();
+  exporter.parse(
+    exportRoot,
+    (result) => {
+      if (result instanceof ArrayBuffer) {
+
+        const blob = new Blob([result], { type: 'model/gltf-binary' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'drawing.glb';
+        link.click();
+      } else {
+
+        console.error('Expected binary format but got JSON');
       }
-
-      const exportRoot = new THREE.Group();
-      meshes.forEach((mesh) => {
-        mesh.updateMatrixWorld(true); 
-        const clone = mesh.clone(true);
-        clone.applyMatrix4(mesh.matrixWorld);
-        exportRoot.add(clone);
-      });
-
-      const exporter = new GLTFExporter();
-      exporter.parse(
-        exportRoot,
-        (result) => {
-          const blob = new Blob([result instanceof ArrayBuffer ? result : JSON.stringify(result)], { type: 'model/gltf-binary' });
-          const link = document.createElement('a');
-          link.href = URL.createObjectURL(blob);
-          link.download = 'drawing.glb';
-          link.click();
-        },
-        { binary: true }
-      );
-    };
+    },
+    { binary: true }
+  );
+};
 
 
   useEffect(() => {
