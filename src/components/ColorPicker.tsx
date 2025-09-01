@@ -15,7 +15,16 @@ const colors = [
   '#cc00cc', // Vivid Magenta
   '#ff6600', // Vivid Orange
   '#f2f2f2', // Soft White
+  '#990000', // Dark Red
+  '#999900', // Dark Yellow
+  '#009900', // Dark Green
+  '#009999', // Dark Cyan
+  '#000099', // Dark Blue
+  '#990099', // Dark Magenta
+  '#ff9933', // Light Orange
+  '#cccccc', // Light Gray
 ];
+
 
 
 const ColorPicker: React.FC<ColorPickerProps> = ({ currentColor, onChange, onClose }) => {
