@@ -1,5 +1,6 @@
 # 3D Draw
-### <a href="https://3d-draw.vercel.app">Demo</a>
+### <a href="https://3d-draw.vercel.app">Web</a>
+### <a href="https://3d-draw.vercel.app/Draw.apk">Android</a>
 
 3D drawing app built with **React**, **Three.js**, and **Vite**.  
 Draw in 3D space, export your creations, and experiment with interactive canvas tools.
