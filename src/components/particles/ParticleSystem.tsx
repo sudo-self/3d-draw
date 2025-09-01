@@ -25,14 +25,14 @@ const ParticleSystem: React.FC<ParticleSystemProps> = ({
   const particlesRef = useRef<Particle[]>([]);
   const particleGeometry = useRef<THREE.BufferGeometry>(new THREE.BufferGeometry());
 
-  // 1) create a round texture via canvas once
+
   const circleTexture = useMemo(() => {
     const size = 128;
     const canvas = document.createElement('canvas');
     canvas.width = size;
     canvas.height = size;
     const ctx = canvas.getContext('2d')!;
-    // draw a filled circle
+
     ctx.clearRect(0, 0, size, size);
     ctx.fillStyle = 'white';
     ctx.beginPath();
@@ -41,14 +41,14 @@ const ParticleSystem: React.FC<ParticleSystemProps> = ({
     return new THREE.CanvasTexture(canvas);
   }, []);
 
-  // 2) plug that texture into the PointsMaterial
+
   const particleMaterial = useRef(
     new THREE.PointsMaterial({
       size: 0.05,
       emissive: currentColor,
       emissiveIntensity: 2,
       map: circleTexture,
-      alphaTest: 0.2,             // cut out the transparent bits
+      alphaTest: 0.2,           
       transparent: true,
       opacity: 0.8,
       vertexColors: true,
@@ -86,7 +86,7 @@ const ParticleSystem: React.FC<ParticleSystemProps> = ({
     }
   }, []);
 
-  // buffers (you can hoist these out if you like)
+
   const positions = new Float32Array(maxParticles * 3);
   const colors = new Float32Array(maxParticles * 3);
 
@@ -105,12 +105,12 @@ const ParticleSystem: React.FC<ParticleSystemProps> = ({
       particle.life -= 0.012;
 
       if (particle.life > 0) {
-        // write position
+  
         positions[aliveCount * 3] = particle.position[0];
         positions[aliveCount * 3 + 1] = particle.position[1];
         positions[aliveCount * 3 + 2] = particle.position[2];
 
-        // write color
+     
         if (particle.isWhite) {
           const v = Math.sqrt(
             particle.velocity[0] ** 2 +
@@ -140,7 +140,7 @@ const ParticleSystem: React.FC<ParticleSystemProps> = ({
       }
     }
 
-    // update geometry
+  
     particleGeometry.current.setAttribute(
       'position',
       new THREE.Float32BufferAttribute(positions.subarray(0, aliveCount * 3), 3)
