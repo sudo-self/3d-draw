@@ -11,4 +11,5 @@ Draw in 3D space, export your creations, and experiment with interactive canvas 
 
 ---
 
+<img width="941" height="586" alt="og-image" src="https://github.com/user-attachments/assets/6e299397-e585-4487-9b98-73d2826a1879" />
 
