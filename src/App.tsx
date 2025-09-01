@@ -64,7 +64,7 @@ const handleExportGLB = () => {
         blob = new Blob([result], { type: "model/gltf-binary" });
         filename = "drawing.glb";
       } else {
-        // JSON fallback
+     
         const json = JSON.stringify(result, null, 2);
         blob = new Blob([json], { type: "model/gltf+json" });
         filename = "drawing.gltf";
