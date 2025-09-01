@@ -86,47 +86,70 @@ function App() {
 const handleExportPNG = () => {
   if (!canvasRef.current) return;
 
-  const renderer = canvasRef.current.getRenderer?.();
   const scene = canvasRef.current.getScene?.();
   const camera = canvasRef.current.getCamera?.();
 
-  if (!renderer || !scene || !camera) {
+  if (!scene || !camera) {
     alert("PNG export not available!");
     return;
   }
 
-  const originalWidth = renderer.domElement.width;
-  const originalHeight = renderer.domElement.height;
-  const originalPixelRatio = renderer.getPixelRatio();
+  const originalRenderer = canvasRef.current.getRenderer?.();
+  if (!originalRenderer) return;
 
+  const width = originalRenderer.domElement.width;
+  const height = originalRenderer.domElement.height;
 
   const ua = navigator.userAgent;
   const isMobileSafari = /iP(ad|hone|od).+Version\/[\d.]+.*Safari/i.test(ua);
 
- 
-  const scale = isMobileSafari ? 1 : Math.min(2, 4096 / Math.max(originalWidth, originalHeight));
+  if (isMobileSafari) {
 
-  renderer.setPixelRatio(window.devicePixelRatio * scale);
-  renderer.setSize(originalWidth * scale, originalHeight * scale, false);
+    const offRenderer = new THREE.WebGLRenderer({ antialias: true });
+    offRenderer.setSize(width, height, false);
+    offRenderer.setClearColor(0x000000, 0); 
 
-  renderer.render(scene, camera);
+    offRenderer.render(scene, camera);
 
-  renderer.domElement.toBlob((blob) => {
-    if (!blob) return;
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = "draw.JesseJesse.png";
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    offRenderer.domElement.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "draw.JesseJesse.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
 
+      offRenderer.dispose();
+    }, "image/png");
+  } else {
 
-    renderer.setPixelRatio(originalPixelRatio);
-    renderer.setSize(originalWidth, originalHeight, false);
-  }, "image/png");
+    const scale = Math.min(2, 4096 / Math.max(width, height));
+    const originalPixelRatio = originalRenderer.getPixelRatio();
+
+    originalRenderer.setPixelRatio(window.devicePixelRatio * scale);
+    originalRenderer.setSize(width * scale, height * scale, false);
+    originalRenderer.render(scene, camera);
+
+    originalRenderer.domElement.toBlob((blob) => {
+      if (!blob) return;
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "draw.JesseJesse.png";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+      originalRenderer.setPixelRatio(originalPixelRatio);
+      originalRenderer.setSize(width, height, false);
+    }, "image/png");
+  }
 };
+
 
 
 
