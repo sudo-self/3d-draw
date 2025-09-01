@@ -83,7 +83,7 @@ function App() {
     );
   };
 
-  const handleExportPNG = () => {
+const handleExportPNG = () => {
   if (!canvasRef.current) return;
 
   const renderer = canvasRef.current.getRenderer?.();
@@ -95,13 +95,12 @@ function App() {
     return;
   }
 
-
   const originalWidth = renderer.domElement.width;
   const originalHeight = renderer.domElement.height;
   const originalPixelRatio = renderer.getPixelRatio();
 
 
-  const scale = 2; 
+  const scale = Math.min(2, 4096 / Math.max(originalWidth, originalHeight)); 
   renderer.setPixelRatio(window.devicePixelRatio * scale);
   renderer.setSize(originalWidth * scale, originalHeight * scale, false);
 
@@ -118,11 +117,12 @@ function App() {
     document.body.removeChild(link);
     setTimeout(() => URL.revokeObjectURL(url), 1000);
 
-  
+
     renderer.setPixelRatio(originalPixelRatio);
     renderer.setSize(originalWidth, originalHeight, false);
   }, "image/png");
 };
+
 
 
   useEffect(() => {
