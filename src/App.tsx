@@ -116,7 +116,7 @@ const handleExportGLB = () => {
       </Suspense>
 
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center gap-2 p-2 bg-black/50 backdrop-blur-md rounded-full">
-        {/* Color Picker */}
+
         <button onClick={toggleColorPicker} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800" aria-label="Color picker">
           <div className="relative">
             <PaletteIcon size={24} />
@@ -126,7 +126,7 @@ const handleExportGLB = () => {
 
         <div className="h-6 w-px bg-gray-700" />
 
-        {/* Eraser */}
+    
         <button onClick={toggleEraser} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 relative ${isErasing ? 'bg-red-900/50 ring-2 ring-red-500 ring-opacity-50' : ''}`} aria-label="Eraser">
           <EraserIcon size={20} />
           {isErasing && <div className="absolute inset-0 rounded-full animate-pulse bg-red-500/20" />}
@@ -134,7 +134,6 @@ const handleExportGLB = () => {
 
         <div className="h-6 w-px bg-gray-700" />
 
-        {/* Camera */}
         <button onClick={toggleCamera} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 relative ${cameraEnabled ? 'bg-blue-900/50 ring-2 ring-blue-500 ring-opacity-50' : ''}`} aria-label="Toggle camera controls">
           <Rotate3dIcon size={20} />
           {cameraEnabled && <div className="absolute inset-0 rounded-full animate-pulse bg-blue-500/20" />}
@@ -142,21 +141,21 @@ const handleExportGLB = () => {
 
         <div className="h-6 w-px bg-gray-700" />
 
-        {/* Toggle lines */}
+     
         <button onClick={toggleLineVisibility} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800" aria-label={showLines ? "Hide lines" : "Show lines"}>
           {showLines ? <EyeIcon size={20} /> : <EyeOffIcon size={20} />}
         </button>
 
         <div className="h-6 w-px bg-gray-700" />
 
-        {/* Clear canvas */}
+     
         <button onClick={clearLines} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-900" aria-label="Clear canvas">
           <Trash2Icon size={20} />
         </button>
 
         <div className="h-6 w-px bg-gray-700" />
 
-        {/* Download GLB */}
+     
         <button onClick={handleExportGLB} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-green-800" aria-label="Download GLB">
           <DownloadIcon size={20} />
         </button>
