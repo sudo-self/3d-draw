@@ -16,15 +16,6 @@ export interface DrawingCanvasHandle {
 
 const SceneContent = ({ planeRef }: { planeRef: React.RefObject<DrawingPlaneHandle> }) => {
   const { cameraEnabled } = useDrawStore();
-  const { gl, scene, camera } = useThree();
-
-
-  useImperativeHandle(planeRef, () => ({
-    getMeshes: () => planeRef.current?.getMeshes?.() || [],
-    getRenderer: () => gl,
-    getScene: () => scene,
-    getCamera: () => camera,
-  }));
 
   return (
     <>
@@ -56,7 +47,7 @@ const SceneContent = ({ planeRef }: { planeRef: React.RefObject<DrawingPlaneHand
         shadow-mapSize-height={1024}
       />
 
-   
+ 
       <DrawingPlane ref={planeRef} />
 
       <EffectComposer>
@@ -81,26 +72,41 @@ const SceneContent = ({ planeRef }: { planeRef: React.RefObject<DrawingPlaneHand
   );
 };
 
+
+const ThreeRefs = forwardRef((_, ref) => {
+  const { gl, scene, camera } = useThree();
+
+  useImperativeHandle(ref, () => ({
+    getRenderer: () => gl,
+    getScene: () => scene,
+    getCamera: () => camera,
+  }));
+
+  return null;
+});
+
 const DrawingCanvas = forwardRef<DrawingCanvasHandle>((props, ref) => {
   const planeRef = useRef<DrawingPlaneHandle>(null);
-
+  const threeRef = useRef<any>(null);
 
   useImperativeHandle(ref, () => ({
     getMeshes: () => planeRef.current?.getMeshes?.() || [],
-    getRenderer: () => (planeRef.current as any)?.getRenderer?.() || null,
-    getScene: () => (planeRef.current as any)?.getScene?.() || null,
-    getCamera: () => (planeRef.current as any)?.getCamera?.() || null,
+    getRenderer: () => threeRef.current?.getRenderer?.() || null,
+    getScene: () => threeRef.current?.getScene?.() || null,
+    getCamera: () => threeRef.current?.getCamera?.() || null,
   }));
 
   return (
     <Canvas shadows dpr={[1, 2]}>
       <color attach="background" args={['#050505']} />
+      <ThreeRefs ref={threeRef} />
       <SceneContent planeRef={planeRef} />
     </Canvas>
   );
 });
 
 export default DrawingCanvas;
+
 
 
 
