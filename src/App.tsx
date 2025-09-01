@@ -84,32 +84,46 @@ function App() {
   };
 
   const handleExportPNG = () => {
-    if (!canvasRef.current) return;
+  if (!canvasRef.current) return;
 
-    const renderer = canvasRef.current.getRenderer?.();
-    const scene = canvasRef.current.getScene?.();
-    const camera = canvasRef.current.getCamera?.();
+  const renderer = canvasRef.current.getRenderer?.();
+  const scene = canvasRef.current.getScene?.();
+  const camera = canvasRef.current.getCamera?.();
 
-    if (!renderer || !scene || !camera) {
-      alert("PNG export not available!");
-      return;
-    }
+  if (!renderer || !scene || !camera) {
+    alert("PNG export not available!");
+    return;
+  }
 
-    renderer.render(scene, camera);
 
-    const canvas = renderer.domElement;
-    canvas.toBlob((blob) => {
-      if (!blob) return;
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "draw.JesseJesse.png";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    }, "image/png");
-  };
+  const originalWidth = renderer.domElement.width;
+  const originalHeight = renderer.domElement.height;
+  const originalPixelRatio = renderer.getPixelRatio();
+
+
+  const scale = 2; 
+  renderer.setPixelRatio(window.devicePixelRatio * scale);
+  renderer.setSize(originalWidth * scale, originalHeight * scale, false);
+
+  renderer.render(scene, camera);
+
+  renderer.domElement.toBlob((blob) => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "draw.JesseJesse.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+
+  
+    renderer.setPixelRatio(originalPixelRatio);
+    renderer.setSize(originalWidth, originalHeight, false);
+  }, "image/png");
+};
+
 
   useEffect(() => {
     const preventDefault = (e: Event) => e.preventDefault();
