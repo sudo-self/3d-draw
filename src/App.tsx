@@ -79,7 +79,7 @@ function App() {
         document.body.removeChild(link);
         setTimeout(() => URL.revokeObjectURL(url), 1000);
       },
-      { binary: true }
+      { binary: true },
     );
   };
 
@@ -166,9 +166,7 @@ function App() {
 
         <button
           onClick={toggleEraser}
-          className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 relative ${
-            isErasing ? "bg-red-900/50 ring-2 ring-red-500 ring-opacity-50" : ""
-          }`}
+          className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 relative ${isErasing ? "bg-red-900/50 ring-2 ring-red-500 ring-opacity-50" : ""}`}
           aria-label="Eraser"
         >
           <EraserIcon size={20} />
@@ -181,9 +179,7 @@ function App() {
 
         <button
           onClick={toggleCamera}
-          className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 relative ${
-            cameraEnabled ? "bg-blue-900/50 ring-2 ring-blue-500 ring-opacity-50" : ""
-          }`}
+          className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 relative ${cameraEnabled ? "bg-blue-900/50 ring-2 ring-blue-500 ring-opacity-50" : ""}`}
           aria-label="Toggle camera controls"
         >
           <Rotate3dIcon size={20} />
@@ -232,11 +228,6 @@ function App() {
           <ImageIcon size={20} />
         </button>
       </div>
-
-      <div className="absolute bottom-16 left-1/2 transform -translate-x-1/2 text-gray-400 text-xs select-none pointer-events-none">
-        draw.JesseJesse.com
-      </div>
-
       {showColorPicker && (
         <ColorPicker
           currentColor={currentColor}
@@ -249,6 +240,19 @@ function App() {
 }
 
 export default App;
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
