@@ -229,7 +229,7 @@ function App() {
         </button>
       </div>
 <div
-  className="absolute bottom-18 left-1/2 transform -translate-x-1/2 text-xs select-none pointer-events-none"
+  className="absolute bottom-16 left-1/2 transform -translate-x-1/2 text-xs select-none pointer-events-none"
   style={{ color: currentColor }}
 >
   draw.JesseJesse.com
