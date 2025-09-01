@@ -6,7 +6,8 @@ import {
   EyeIcon,
   EyeOffIcon,
   Rotate3dIcon,
-  DownloadIcon
+  DownloadIcon,
+  ImageIcon 
 } from 'lucide-react';
 import DrawingCanvas, { DrawingCanvasHandle } from './components/DrawingCanvas';
 import ColorPicker from './components/ColorPicker';
@@ -34,56 +35,67 @@ function App() {
     toggleCamera
   } = useDrawStore();
   
- const canvasRef = useRef<DrawingCanvasHandle>(null);
+  const canvasRef = useRef<DrawingCanvasHandle>(null);
 
-const handleExportGLB = () => {
-  if (!canvasRef.current) return;
+  const handleExportGLB = () => {
+    if (!canvasRef.current) return;
 
-  const meshes = canvasRef.current.getMeshes();
-  if (!meshes.length) {
-    alert('Nothing to export!');
-    return;
-  }
+    const meshes = canvasRef.current.getMeshes();
+    if (!meshes.length) {
+      alert('Nothing to export!');
+      return;
+    }
 
-  const exportRoot = new THREE.Group();
-  meshes.forEach((mesh) => {
-    mesh.updateMatrixWorld(true);
-    const clone = mesh.clone(true);
-    if (clone.geometry) clone.geometry.computeVertexNormals();
-    exportRoot.add(clone);
-  });
+    const exportRoot = new THREE.Group();
+    meshes.forEach((mesh) => {
+      mesh.updateMatrixWorld(true);
+      const clone = mesh.clone(true);
+      if (clone.geometry) clone.geometry.computeVertexNormals();
+      exportRoot.add(clone);
+    });
 
-  const exporter = new GLTFExporter();
-  exporter.parse(
-    exportRoot,
-    (result) => {
-      let blob;
-      let filename;
+    const exporter = new GLTFExporter();
+    exporter.parse(
+      exportRoot,
+      (result) => {
+        let blob;
+        let filename;
 
-      if (result instanceof ArrayBuffer) {
-        blob = new Blob([result], { type: "model/gltf-binary" });
-        filename = "drawing.glb";
-      } else {
-     
-        const json = JSON.stringify(result, null, 2);
-        blob = new Blob([json], { type: "model/gltf+json" });
-        filename = "drawing.gltf";
-      }
+        if (result instanceof ArrayBuffer) {
+          blob = new Blob([result], { type: "model/gltf-binary" });
+          filename = "drawing.glb";
+        } else {
+          const json = JSON.stringify(result, null, 2);
+          blob = new Blob([json], { type: "model/gltf+json" });
+          filename = "drawing.gltf";
+        }
 
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = filename;
-      document.body.appendChild(link); 
-      link.click();
-      document.body.removeChild(link);
-      setTimeout(() => URL.revokeObjectURL(url), 1000);
-    },
-    { binary: true }
-  );
-};
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link); 
+        link.click();
+        document.body.removeChild(link);
+        setTimeout(() => URL.revokeObjectURL(url), 1000);
+      },
+      { binary: true }
+    );
+  };
 
+  const handleExportPNG = () => {
+    if (!canvasRef.current) return;
+    const renderer = canvasRef.current.getRenderer?.();
+    if (!renderer) return;
 
+    const dataURL = renderer.domElement.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.href = dataURL;
+    link.download = "drawing.png";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   useEffect(() => {
     const preventDefault = (e: Event) => e.preventDefault();
@@ -126,7 +138,6 @@ const handleExportGLB = () => {
 
         <div className="h-6 w-px bg-gray-700" />
 
-    
         <button onClick={toggleEraser} className={`w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800 relative ${isErasing ? 'bg-red-900/50 ring-2 ring-red-500 ring-opacity-50' : ''}`} aria-label="Eraser">
           <EraserIcon size={20} />
           {isErasing && <div className="absolute inset-0 rounded-full animate-pulse bg-red-500/20" />}
@@ -141,23 +152,26 @@ const handleExportGLB = () => {
 
         <div className="h-6 w-px bg-gray-700" />
 
-     
         <button onClick={toggleLineVisibility} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-gray-800" aria-label={showLines ? "Hide lines" : "Show lines"}>
           {showLines ? <EyeIcon size={20} /> : <EyeOffIcon size={20} />}
         </button>
 
         <div className="h-6 w-px bg-gray-700" />
 
-     
         <button onClick={clearLines} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-red-900" aria-label="Clear canvas">
           <Trash2Icon size={20} />
         </button>
 
         <div className="h-6 w-px bg-gray-700" />
 
-     
         <button onClick={handleExportGLB} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-green-800" aria-label="Download GLB">
           <DownloadIcon size={20} />
+        </button>
+
+        <div className="h-6 w-px bg-gray-700" />
+
+        <button onClick={handleExportPNG} className="w-10 h-10 rounded-full flex items-center justify-center hover:bg-green-800" aria-label="Download PNG">
+          <ImageIcon size={20} />
         </button>
       </div>
 
@@ -167,6 +181,7 @@ const handleExportGLB = () => {
 }
 
 export default App;
+
 
 
 
