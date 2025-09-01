@@ -228,6 +228,11 @@ function App() {
           <ImageIcon size={20} />
         </button>
       </div>
+
+      <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-2 text-gray-400 text-xs select-none pointer-events-none">
+        draw.JesseJesse.com
+      </div>
+
       {showColorPicker && (
         <ColorPicker
           currentColor={currentColor}
@@ -236,15 +241,11 @@ function App() {
         />
       )}
     </div>
-
-<div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 mb-2 text-gray-400 text-xs select-none pointer-events-none">
-  draw.JesseJesse.com
-</div>
-
   );
 }
 
 export default App;
+
 
 
 
