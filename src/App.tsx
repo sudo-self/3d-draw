@@ -100,7 +100,12 @@ const handleExportPNG = () => {
   const originalPixelRatio = renderer.getPixelRatio();
 
 
-  const scale = Math.min(2, 4096 / Math.max(originalWidth, originalHeight)); 
+  const ua = navigator.userAgent;
+  const isMobileSafari = /iP(ad|hone|od).+Version\/[\d.]+.*Safari/i.test(ua);
+
+ 
+  const scale = isMobileSafari ? 1 : Math.min(2, 4096 / Math.max(originalWidth, originalHeight));
+
   renderer.setPixelRatio(window.devicePixelRatio * scale);
   renderer.setSize(originalWidth * scale, originalHeight * scale, false);
 
@@ -122,6 +127,7 @@ const handleExportPNG = () => {
     renderer.setSize(originalWidth, originalHeight, false);
   }, "image/png");
 };
+
 
 
 
