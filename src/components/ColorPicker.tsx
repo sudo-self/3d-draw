@@ -8,23 +8,22 @@ interface ColorPickerProps {
 
 const colors = [
   '#e60000', // Vivid Red
+  '#ff4500', // Orange Red
+  '#ff9900', // Bright Orange
   '#ffeb00', // Vivid Yellow
+  '#a3ff00', // Lime Green
   '#00b300', // Vivid Green
   '#00cccc', // Vivid Cyan
   '#0066ff', // Vivid Blue
+  '#9933ff', // Bright Purple
   '#cc00cc', // Vivid Magenta
-  '#ff6600', // Vivid Orange
+  '#ff66cc', // Pink
+  '#ffcc99', // Peach
   '#f2f2f2', // Soft White
-  '#990000', // Dark Red
-  '#999900', // Dark Yellow
-  '#009900', // Dark Green
-  '#009999', // Dark Cyan
-  '#000099', // Dark Blue
-  '#990099', // Dark Magenta
-  '#ff9933', // Light Orange
   '#cccccc', // Light Gray
+  '#666666', // Medium Gray
+  '#333333', // Dark Gray
 ];
-
 
 
 const ColorPicker: React.FC<ColorPickerProps> = ({ currentColor, onChange, onClose }) => {
