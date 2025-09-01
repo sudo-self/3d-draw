@@ -63,7 +63,7 @@ function App() {
 
         if (result instanceof ArrayBuffer) {
           blob = new Blob([result], { type: "model/gltf-binary" });
-          filename = "drawing.glb";
+          filename = "draw.JesseJesse.glb";
         } else {
           const json = JSON.stringify(result, null, 2);
           blob = new Blob([json], { type: "model/gltf+json" });
@@ -103,7 +103,7 @@ function App() {
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
       link.href = url;
-      link.download = "drawing.png";
+      link.download = "draw.JesseJesse.png";
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
